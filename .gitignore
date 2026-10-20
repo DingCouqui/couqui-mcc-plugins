@@ -1,0 +1,11 @@
+# Local packing output
+release-assets/
+
+# .NET build output
+bin/
+obj/
+
+# IDE and user files
+.vs/
+.idea/
+*.user

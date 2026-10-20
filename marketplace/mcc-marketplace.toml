@@ -1,0 +1,11 @@
+schema-version = 2
+id = "couqui-mcc-plugins"
+name = "Couqui MCC Plugins"
+
+# One entry per published plugin. The catalogue keeps the full release history.
+#
+# [[plugins]]
+# id = "example-plugin"
+# description = "One line describing what the plugin does."
+# tags = ["utility"]
+# releases = "catalog/example-plugin.toml"
