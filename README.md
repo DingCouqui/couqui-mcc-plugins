@@ -62,6 +62,8 @@ The id is limited to ASCII letters, digits, `-`, `_`, and `.`, and must not star
 /chat-log-rotator timestamp off
 ```
 
+`chat-log-rotator` 1.0.0 was republished once before any installation existed. Treat it as immutable from now on: publish a new version for any further change.
+
 ## Add another plugin
 
 1. Create `src/<plugin-id>/` and add the plugin files:
