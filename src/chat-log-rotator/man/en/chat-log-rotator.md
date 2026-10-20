@@ -9,11 +9,11 @@ In `plugins/userdata/chat-log-rotator/settings.toml`:
 | Key | Default | Meaning |
 | --- | --- | --- |
 | `Enabled` | `true` | Set to false to stop logging without unloading the plugin. |
-| `Add_DateTime` | `true` | Prepend `yyyy-MM-dd HH:mm:ss` to every logged line. |
+| `Add_DateTime` | `true` | Prepend `yyyy-MM-dd HH:mm:ss` to every logged line. Also `/chat-log-rotator timestamp <on/off>`. |
 | `Rotation` | `"day"` | `day`, `week` or `month`. Prefer the command when the client is running. |
 | `Log_Directory` | `"../../chat-log/data"` | Default resolves to the original chat-log data folder. `"."` is this plugin's own data folder. Relative paths resolve against this plugin's data folder. |
 | `Log_File` | `"chatlog-%username%-%serverip%-%period%.txt"` | File name template. `%username%`, `%serverip%` and `%period%` are expanded. `%period%` is added before the extension when missing. |
-| `Filter` | `"messages"` | `all`, `messages`, `chat`, `private_chat` or `internal_msg`. |
+| `Filter` | `"messages"` | `all`, `messages`, `chat`, `private_chat` or `internal_msg`. Also `/chat-log-rotator filter <value>`. |
 
 `internal_msg` is accepted for compatibility but records nothing: the new command system does not expose internal command results to plugins.
 
@@ -25,9 +25,16 @@ In `plugins/userdata/chat-log-rotator/settings.toml`:
 /chat-log-rotator period day
 /chat-log-rotator period week
 /chat-log-rotator period month
+/chat-log-rotator filter all
+/chat-log-rotator filter messages
+/chat-log-rotator filter chat
+/chat-log-rotator filter private_chat
+/chat-log-rotator filter internal_msg
+/chat-log-rotator timestamp on
+/chat-log-rotator timestamp off
 ```
 
-`period` writes the new value to `settings.toml` immediately, so it survives a restart. The next message goes to the new bucket; no timer or restart is involved.
+`period`, `filter` and `timestamp` write the new value to `settings.toml` immediately, so it survives a restart. The next message follows the new value; no timer or restart is involved. `status` prints the rotation, filter, timestamp state, directory, current bucket and the file the next message would use.
 
 ## Rotation buckets
 

@@ -1,4 +1,4 @@
-schema-version = 2
+﻿schema-version = 2
 id = "chat-log-rotator"
 
 [[releases]]
@@ -10,5 +10,5 @@ framework = "net10.0"
 needs = ["commands"]
 yanked = false
 assets = [
-  { kind = "source", target = "any", url = "https://raw.githubusercontent.com/DingCouqui/couqui-mcc-plugins/main/releases/chat-log-rotator/1.0.0/chat-log-rotator-1.0.0-source-any.zip", sha256 = "fef167dd8f953621d7754134610d6f9adbe3547fd0f9791b7e03b7cf57401458" },
+  { kind = "source", target = "any", url = "https://raw.githubusercontent.com/DingCouqui/couqui-mcc-plugins/main/releases/chat-log-rotator/1.0.0/chat-log-rotator-1.0.0-source-any.zip", sha256 = "4875227a4b66c309489dbae6a48df7b1a74c36682508261d743b953d0a07aa2a" },
 ]

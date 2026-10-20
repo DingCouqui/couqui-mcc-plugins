@@ -264,7 +264,7 @@ public sealed class ChatLogRotatorPlugin : IPlugin
         if (_settings.Enabled && filter == MessageFilter.InternalMsg)
             context.Logger.LogWarning("{Message}", context.Strings.Get("internal_unavailable"));
 
-        context.Commands.Register(new RotatorCommand(context.Strings, ShowStatus, SetRotation));
+        context.Commands.Register(new RotatorCommand(context.Strings, ShowStatus, SetRotation, SetFilter, SetTimestamp));
 
         // Re-subscribe on every session, so a reconnect keeps logging.
         context.SessionStarted += (_, e) =>
@@ -343,17 +343,48 @@ public sealed class ChatLogRotatorPlugin : IPlugin
             Path.Combine(_logDirectory, name)));
     }
 
+    private int SetFilter(string value, CommandContext call)
+    {
+        if (!RotatorFormat.TryParseFilter(value, out MessageFilter filter))
+            return call.Result.Fail(_context.Strings.Format("command.filter_invalid", value));
+
+        lock (_gate)
+        {
+            _selection = RotatorFormat.Select(filter);
+            _settings.Filter = RotatorFormat.FilterName(filter);
+            _context.Settings.Save(_settings);
+        }
+
+        if (filter == MessageFilter.InternalMsg)
+            _context.Logger.LogWarning("{Message}", _context.Strings.Get("internal_unavailable"));
+
+        return call.Result.Ok(_context.Strings.Format("command.filter_set", RotatorFormat.FilterName(filter)));
+    }
+
+    private int SetTimestamp(bool enabled, CommandContext call)
+    {
+        lock (_gate)
+        {
+            _settings.Add_DateTime = enabled;
+            _context.Settings.Save(_settings);
+        }
+
+        return call.Result.Ok(_context.Strings.Format("command.timestamp_set", enabled ? "on" : "off"));
+    }
+
     private string ShowStatus()
     {
         string logFile;
         string directory;
         RotationMode rotation;
         MessageFilter filter;
+        bool addDateTime;
         lock (_gate)
         {
             logFile = _settings.Log_File;
             directory = _logDirectory;
             rotation = _rotation;
+            addDateTime = _settings.Add_DateTime;
             filter = RotatorFormat.TryParseFilter(_settings.Filter, out MessageFilter parsedFilter)
                 ? parsedFilter
                 : MessageFilter.Messages;
@@ -366,6 +397,7 @@ public sealed class ChatLogRotatorPlugin : IPlugin
             "command.status",
             RotatorFormat.RotationName(rotation),
             RotatorFormat.FilterName(filter),
+            addDateTime ? "on" : "off",
             directory,
             bucket,
             name);
@@ -396,17 +428,28 @@ public sealed class ChatLogRotatorPlugin : IPlugin
     }
 
     /// <summary>The command surface: status, and the period setter the whole rotation feature hangs on.</summary>
-    private sealed class RotatorCommand(IPluginLocalization strings, Func<string> status, Func<string, CommandContext, int> setRotation)
+    private sealed class RotatorCommand(
+        IPluginLocalization strings,
+        Func<string> status,
+        Func<string, CommandContext, int> setRotation,
+        Func<string, CommandContext, int> setFilter,
+        Func<bool, CommandContext, int> setTimestamp)
         : CommandBase
     {
         public override string CmdName => "chat-log-rotator";
 
         public override string CmdDesc => strings.Get("command.desc");
 
-        public override string CmdUsage => "chat-log-rotator period <day|week|month>";
+        public override string CmdUsage =>
+            "chat-log-rotator period <day|week|month> | filter <all|messages|chat|private_chat|internal_msg> | timestamp <on|off>";
 
         public override IReadOnlyList<string> Examples =>
-            ["chat-log-rotator status", "chat-log-rotator period week"];
+        [
+            "chat-log-rotator status",
+            "chat-log-rotator period week",
+            "chat-log-rotator filter private_chat",
+            "chat-log-rotator timestamp off",
+        ];
 
         public override void Register(CommandBuilder<CommandContext> builder)
         {
@@ -418,6 +461,15 @@ public sealed class ChatLogRotatorPlugin : IPlugin
                 .ThenLiteral("period", node => node
                     .ThenArgument("value", Arguments.Word(), value => value
                         .Executes(ctx => setRotation(ctx.GetArgument<string>("value"), ctx.Source))))
+                .ThenLiteral("filter", node => node
+                    .ThenLiteral("all", value => value.Executes(ctx => setFilter("all", ctx.Source)))
+                    .ThenLiteral("messages", value => value.Executes(ctx => setFilter("messages", ctx.Source)))
+                    .ThenLiteral("chat", value => value.Executes(ctx => setFilter("chat", ctx.Source)))
+                    .ThenLiteral("private_chat", value => value.Executes(ctx => setFilter("private_chat", ctx.Source)))
+                    .ThenLiteral("internal_msg", value => value.Executes(ctx => setFilter("internal_msg", ctx.Source))))
+                .ThenLiteral("timestamp", node => node
+                    .ThenLiteral("on", value => value.Executes(ctx => setTimestamp(true, ctx.Source)))
+                    .ThenLiteral("off", value => value.Executes(ctx => setTimestamp(false, ctx.Source))))
                 .ThenLiteral("_help", node => node
                     .Executes(ctx => ShowUsage(ctx.Source))
                     .RedirectTo(help)));

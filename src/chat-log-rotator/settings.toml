@@ -1,7 +1,7 @@
 # ChatLogRotator settings (regenerated with commented defaults on first run if deleted).
 Enabled = true # Set to false to stop logging without unloading the plugin.
-Add_DateTime = true # Prepend a yyyy-MM-dd HH:mm:ss timestamp to every logged line.
-Rotation = "day" # day, week or month. Also changeable with /chat-log-rotator period <value>.
+Add_DateTime = true # Prepend a yyyy-MM-dd HH:mm:ss timestamp. Also /chat-log-rotator timestamp <on|off>.
+Rotation = "day" # day, week or month. Also /chat-log-rotator period <value>.
 Log_Directory = "../../chat-log/data" # Default keeps the original chat-log folder. "." is this plugin's data folder.
 Log_File = "chatlog-%username%-%serverip%-%period%.txt" # %username%, %serverip% and %period% are expanded.
-Filter = "messages" # all, messages, chat, private_chat or internal_msg.
+Filter = "messages" # all, messages, chat, private_chat or internal_msg. Also /chat-log-rotator filter <value>.

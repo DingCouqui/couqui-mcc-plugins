@@ -51,13 +51,15 @@ The id is limited to ASCII letters, digits, `-`, `_`, and `.`, and must not star
 
 | Plugin | Version | What it does |
 | --- | --- | --- |
-| `chat-log-rotator` | 1.0.0 | Writes received chat to files rotated by day, ISO week or month. Keeps chat-log's filters, timestamp and placeholders, and adds `/chat-log-rotator period`. |
+| `chat-log-rotator` | 1.0.0 | Writes received chat to files rotated by day, ISO week or month. Keeps chat-log's filters, timestamp and placeholders, and adds runtime switches for rotation period, message filter and timestamp. |
 
 ```text
 /plugins install chat-log-rotator@couqui-mcc-plugins yes
 /plugins enable chat-log-rotator
 /chat-log-rotator status
 /chat-log-rotator period week
+/chat-log-rotator filter private_chat
+/chat-log-rotator timestamp off
 ```
 
 ## Add another plugin
