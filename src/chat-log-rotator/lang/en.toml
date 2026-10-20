@@ -1,0 +1,19 @@
+# ChatLogRotator's own strings, in English. Copy to lang/<language>.toml to translate; keep the keys.
+# The log records themselves ("Chat bob: hello") are not here: their format is fixed.
+
+internal_unavailable = "chat-log-rotator: the internal_msg filter records nothing; internal command results are not exposed to plugins."
+write_failed = "chat-log-rotator: could not append to '{0}'."
+
+[command]
+desc = "Write chat to log files rotated by day, ISO week or month."
+period_invalid = "Unknown rotation '{0}'. Use day, week or month."
+period_set = "Rotation set to {0}. The next chat line goes to {1}."
+status = "Rotation: {0}; filter: {1}; directory: {2}; bucket: {3}; file: {4}"
+
+[settings]
+enabled = "Set to false to stop logging without unloading the plugin."
+add_datetime = "Prepend a yyyy-MM-dd HH:mm:ss timestamp to every logged line."
+rotation = "Rotation period: day, week or month. Change it with /chat-log-rotator period <value>."
+log_directory = "Log directory. The default ../../chat-log/data keeps the original chat-log folder; use . for this plugin's data folder. Relative paths resolve against this plugin's data folder."
+log_file = "File name template. %username%, %serverip% and %period% are expanded; %period% is added automatically when missing."
+filter = "all, messages, chat, private_chat or internal_msg."

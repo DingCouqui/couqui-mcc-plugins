@@ -1,0 +1,17 @@
+schema-version = 2
+id = "chat-log-rotator"
+version = "1.0.0"
+kind = "source"
+target = "any"
+entry = "ChatLogRotator.cs"
+framework = "net10.0"
+api-version = "1.0"
+dmcbk = ">=0.1.0-preview.8 <0.2.0"
+umpk = ">=0.9.0-beta.7 <0.10.0"
+needs = ["commands"]
+man = ["chat-log-rotator"]
+
+[meta]
+description = "Writes chat to log files rotated by day, ISO week or month."
+tags = ["chat", "logging", "files"]
+uses = ["chat", "files"]

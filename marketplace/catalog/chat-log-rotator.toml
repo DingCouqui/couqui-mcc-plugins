@@ -1,0 +1,14 @@
+schema-version = 2
+id = "chat-log-rotator"
+
+[[releases]]
+version = "1.0.0"
+api-version = "1.0"
+dmcbk = ">=0.1.0-preview.8 <0.2.0"
+umpk = ">=0.9.0-beta.7 <0.10.0"
+framework = "net10.0"
+needs = ["commands"]
+yanked = false
+assets = [
+  { kind = "source", target = "any", url = "https://raw.githubusercontent.com/DingCouqui/couqui-mcc-plugins/main/releases/chat-log-rotator/1.0.0/chat-log-rotator-1.0.0-source-any.zip", sha256 = "fef167dd8f953621d7754134610d6f9adbe3547fd0f9791b7e03b7cf57401458" },
+]

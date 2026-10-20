@@ -1,0 +1,7 @@
+# ChatLogRotator package defaults. The runtime merges user settings over this file.
+Enabled = true
+Add_DateTime = true
+Rotation = "day"
+Log_Directory = "../../chat-log/data"
+Log_File = "chatlog-%username%-%serverip%-%period%.txt"
+Filter = "messages"

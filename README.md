@@ -32,10 +32,11 @@ couqui-mcc-plugins/
 │   └── <plugin-id>/                # plugin author folders (source + manifest + resources)
 ├── tools/
 │   └── PackRelease/                # deterministic zip, SHA-256 sidecar, catalogue fragment
+├── releases/                       # published archives, served through their raw HTTPS URL
 └── release-assets/                 # local packing output, ignored by Git
 ```
 
-`marketplace/` is what users download. Plugin payloads live in GitHub Releases, not in Git history.
+`marketplace/` is what users download. The archive at each `url` in a catalogue is immutable: publish a new plugin version instead of replacing an existing archive.
 
 ## Marketplace identity
 
@@ -46,7 +47,20 @@ couqui-mcc-plugins/
 
 The id is limited to ASCII letters, digits, `-`, `_`, and `.`, and must not start with a dot. Do not rename it after publishing: local publisher bindings and `plugins.lock.toml` record it.
 
-## Add the first plugin
+## Published plugins
+
+| Plugin | Version | What it does |
+| --- | --- | --- |
+| `chat-log-rotator` | 1.0.0 | Writes received chat to files rotated by day, ISO week or month. Keeps chat-log's filters, timestamp and placeholders, and adds `/chat-log-rotator period`. |
+
+```text
+/plugins install chat-log-rotator@couqui-mcc-plugins yes
+/plugins enable chat-log-rotator
+/chat-log-rotator status
+/chat-log-rotator period week
+```
+
+## Add another plugin
 
 1. Create `src/<plugin-id>/` and add the plugin files:
    - `plugin.toml` (schema 2, matching `id`, `version`, `kind`, `target`, `entry`, `api-version`, `dmcbk`, `umpk`, `framework`)
@@ -70,7 +84,7 @@ The id is limited to ASCII letters, digits, `-`, `_`, and `.`, and must not star
    dotnet run --project tools/PackRelease -- src/<plugin-id> src/<plugin-id>/bin/Release/net10.0 release-assets compiled any https://github.com/DingCouqui/couqui-mcc-plugins/releases/download/plugin%2F<plugin-id>%2Fv<version>/
    ```
 
-4. Create a GitHub Release tagged `plugin/<plugin-id>/v<version>` and upload the zip and its `.sha256` sidecar.
+4. Upload the zip and its `.sha256` sidecar to an immutable HTTPS location. Either create a GitHub Release tagged `plugin/<plugin-id>/v<version>`, or commit the archive under `releases/<plugin-id>/<version>/` and use its raw URL. Never overwrite a published path; publish a new version instead.
 5. Download the uploaded zip through its final URL and confirm the digest matches the generated sidecar.
 6. Add the release metadata to `marketplace/catalog/<plugin-id>.toml`. On the first release, copy the generated `.catalogue.toml` fragment. For later versions, append one `[[releases]]` table and keep all previous entries.
 7. Register the plugin in `marketplace/mcc-marketplace.toml`:
